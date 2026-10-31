@@ -1,13 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#0a0d14">
+<meta name="theme-color" content="#090d14">
 <title>SpawnerLab — Minecraft Economy Simulator</title>
 
 <style>
-:root {
+:root{
   --bg:#090d14;
   --panel:#111925;
   --panel2:#151f2d;
@@ -22,8 +23,8 @@
 }
 
 *{box-sizing:border-box}
-
-body {
+html{scroll-behavior:smooth}
+body{
   margin:0;
   background:
     radial-gradient(ellipse at 10% 0%,#1a3040 0,transparent 38%),
@@ -32,14 +33,49 @@ body {
   color:var(--text);
   font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
   min-height:100vh;
+  overflow-x:hidden;
 }
 
 button,input{font:inherit}
 button{cursor:pointer}
 
-.app{max-width:1550px;margin:auto;padding:25px}
+/* PARTICULES */
 
-.top {
+.particles{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:0;
+}
+
+.particle{
+  position:absolute;
+  width:3px;
+  height:3px;
+  border-radius:50%;
+  background:#63f2a6;
+  opacity:0;
+  box-shadow:0 0 12px #63f2a6;
+  animation:floatParticle linear infinite;
+}
+
+@keyframes floatParticle{
+  0%{transform:translateY(20px);opacity:0}
+  15%{opacity:.45}
+  85%{opacity:.25}
+  100%{transform:translateY(-110vh);opacity:0}
+}
+
+.app{
+  max-width:1550px;
+  margin:auto;
+  padding:25px;
+  position:relative;
+  z-index:1;
+}
+
+.top{
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -49,19 +85,27 @@ button{cursor:pointer}
 
 .brand{display:flex;align-items:center;gap:13px}
 
-.logo {
+.logo{
   width:47px;height:47px;
   display:grid;place-items:center;
   border-radius:15px;
   background:linear-gradient(135deg,#63f2a6,#4eabff);
-  color:#07140e;font-size:24px;font-weight:1000;
-  box-shadow:0 8px 30px #63f2a622;
+  color:#07140e;
+  font-size:24px;
+  font-weight:1000;
+  box-shadow:0 8px 30px #63f2a644;
+  animation:logoGlow 4s ease-in-out infinite;
+}
+
+@keyframes logoGlow{
+  0%,100%{box-shadow:0 8px 25px #63f2a622}
+  50%{box-shadow:0 8px 40px #63f2a666}
 }
 
 .brand h1{font-size:21px;margin:0;letter-spacing:-.6px}
 .brand p{font-size:12px;color:var(--muted);margin:3px 0 0}
 
-.live {
+.live{
   border:1px solid #285b48;
   background:#10251e;
   color:var(--green);
@@ -69,11 +113,12 @@ button{cursor:pointer}
   border-radius:30px;
   font-size:11px;
   font-weight:800;
+  box-shadow:0 0 20px #63f2a610;
 }
 
 .hero{margin-bottom:24px}
 
-.eyebrow {
+.eyebrow{
   color:var(--green);
   font-size:11px;
   font-weight:850;
@@ -81,40 +126,50 @@ button{cursor:pointer}
   text-transform:uppercase;
 }
 
-.hero h2 {
+.hero h2{
   font-size:clamp(29px,4vw,45px);
   letter-spacing:-1.6px;
   margin:9px 0;
+  background:linear-gradient(90deg,#fff,#b8d8ff,#63f2a6);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
 }
 
-.hero p {
+.hero p{
   color:var(--muted);
   font-size:14px;
   line-height:1.6;
   max-width:750px;
 }
 
-.layout {
+.layout{
   display:grid;
   grid-template-columns:310px minmax(0,1fr);
   gap:18px;
   align-items:start;
 }
 
-.panel {
+.panel{
   background:linear-gradient(180deg,#131c29f5,#101722f5);
   border:1px solid var(--line);
   border-radius:19px;
   box-shadow:0 12px 40px #0002;
+  transition:border-color .25s,box-shadow .25s;
 }
 
-.controls {
+.panel:hover{
+  border-color:#344a64;
+  box-shadow:0 14px 45px #0003;
+}
+
+.controls{
   padding:20px;
   position:sticky;
   top:15px;
 }
 
-.panel-title {
+.panel-title{
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -123,7 +178,7 @@ button{cursor:pointer}
 
 .panel-title h3{font-size:15px;margin:0}
 
-.tag {
+.tag{
   color:var(--green);
   border:1px solid #285b48;
   padding:5px 8px;
@@ -134,7 +189,7 @@ button{cursor:pointer}
 
 .field{margin:15px 0}
 
-.field label {
+.field label{
   display:flex;
   justify-content:space-between;
   gap:8px;
@@ -145,7 +200,7 @@ button{cursor:pointer}
 
 .field label span{color:var(--muted)}
 
-.input-wrap {
+.input-wrap{
   display:flex;
   align-items:center;
   background:#0a1019;
@@ -155,12 +210,12 @@ button{cursor:pointer}
   transition:.2s;
 }
 
-.input-wrap:focus-within {
+.input-wrap:focus-within{
   border-color:var(--green);
   box-shadow:0 0 0 3px #63f2a615;
 }
 
-.input-wrap input {
+.input-wrap input{
   width:100%;
   min-width:0;
   background:transparent;
@@ -171,14 +226,14 @@ button{cursor:pointer}
   font-size:14px;
 }
 
-.unit {
+.unit{
   padding:0 12px;
   color:#8192a9;
   font-size:11px;
   white-space:nowrap;
 }
 
-.hint {
+.hint{
   color:#74859b;
   font-size:11px;
   line-height:1.55;
@@ -187,7 +242,7 @@ button{cursor:pointer}
 
 .divider{height:1px;background:var(--line);margin:20px 0}
 
-.reserve-box {
+.reserve-box{
   padding:13px;
   border:1px solid #36503f;
   border-radius:13px;
@@ -195,7 +250,7 @@ button{cursor:pointer}
   margin-top:19px;
 }
 
-.reserve-title {
+.reserve-title{
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -203,12 +258,10 @@ button{cursor:pointer}
 }
 
 .reserve-title strong{font-size:12px;color:var(--green)}
-
 .reserve-box .field{margin:11px 0}
-
 .reserve-box .input-wrap{background:#0b1714}
 
-.reserve-info {
+.reserve-info{
   color:#91a99c;
   font-size:10px;
   line-height:1.5;
@@ -217,7 +270,7 @@ button{cursor:pointer}
 
 .btnrow{display:flex;gap:8px}
 
-.btn {
+.btn{
   padding:11px 13px;
   border-radius:10px;
   border:1px solid var(--line);
@@ -228,16 +281,20 @@ button{cursor:pointer}
   transition:.2s;
 }
 
-.btn:hover{transform:translateY(-2px);border-color:#61748c}
+.btn:hover{
+  transform:translateY(-2px);
+  border-color:#61748c;
+  box-shadow:0 5px 15px #0003;
+}
 
-.btn.primary {
+.btn.primary{
   background:var(--green);
   border-color:var(--green);
   color:#06140d;
   flex:1;
 }
 
-.controls-foot {
+.controls-foot{
   color:#718199;
   font-size:10px;
   line-height:1.6;
@@ -246,23 +303,29 @@ button{cursor:pointer}
 
 .main{min-width:0}
 
-.stats {
+.stats{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
   gap:11px;
   margin-bottom:16px;
 }
 
-.stat {
+.stat{
   background:#121b28;
   border:1px solid var(--line);
   border-radius:16px;
   padding:15px;
   min-width:0;
-  animation:appear .35s ease both;
+  animation:appear .45s ease both;
+  transition:transform .25s,border-color .25s;
 }
 
-.stat-top {
+.stat:hover{
+  transform:translateY(-4px);
+  border-color:#45617d;
+}
+
+.stat-top{
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -271,14 +334,14 @@ button{cursor:pointer}
   font-size:11px;
 }
 
-.stat-icon {
+.stat-icon{
   width:28px;height:28px;
   display:grid;place-items:center;
   border-radius:9px;
   background:#203044;
 }
 
-.stat-value {
+.stat-value{
   font-size:clamp(19px,2vw,27px);
   font-weight:900;
   letter-spacing:-1px;
@@ -295,13 +358,13 @@ button{cursor:pointer}
 .purple{color:var(--purple)}
 .orange{color:var(--orange)}
 
-.chart-panel {
+.chart-panel{
   padding:19px;
   margin-bottom:16px;
   overflow:hidden;
 }
 
-.chart-head {
+.chart-head{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
@@ -312,13 +375,13 @@ button{cursor:pointer}
 .chart-head h3{font-size:15px;margin:0 0 6px}
 .chart-head p{font-size:11px;color:var(--muted);line-height:1.5;margin:0}
 
-.chart-actions {
+.chart-actions{
   display:flex;
   gap:6px;
   flex-wrap:wrap;
 }
 
-.pill {
+.pill{
   border:1px solid var(--line);
   background:#111a27;
   color:#aebdd0;
@@ -329,13 +392,16 @@ button{cursor:pointer}
   transition:.2s;
 }
 
-.pill.active {
+.pill:hover{border-color:#64809e}
+
+.pill.active{
   background:#1c342b;
   border-color:#397456;
   color:var(--green);
+  box-shadow:0 0 15px #63f2a610;
 }
 
-.chart-scroll {
+.chart-scroll{
   overflow-x:auto;
   overflow-y:hidden;
   scrollbar-color:#40536b #111722;
@@ -349,7 +415,7 @@ button{cursor:pointer}
 .chart-scroll::-webkit-scrollbar-track{background:#111722}
 .chart-scroll::-webkit-scrollbar-thumb{background:#40536b;border-radius:10px}
 
-.chart-inner {
+.chart-inner{
   height:330px;
   min-width:100%;
   position:relative;
@@ -357,7 +423,7 @@ button{cursor:pointer}
 
 canvas{display:block;width:100%;height:100%}
 
-.chart-bottom {
+.chart-bottom{
   display:flex;
   justify-content:space-between;
   gap:10px;
@@ -367,14 +433,14 @@ canvas{display:block;width:100%;height:100%}
   margin-top:10px;
 }
 
-.legend {
+.legend{
   display:flex;
   gap:15px;
   flex-wrap:wrap;
   margin-top:15px;
 }
 
-.legend-item {
+.legend-item{
   display:flex;
   align-items:center;
   gap:7px;
@@ -384,7 +450,160 @@ canvas{display:block;width:100%;height:100%}
 
 .dot{width:9px;height:9px;border-radius:50%}
 
-.lower-grid {
+/* CONVERTISSEUR */
+
+.converter{
+  padding:19px;
+  margin-bottom:16px;
+}
+
+.converter-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.converter-heading h3{font-size:15px;margin:0 0 5px}
+.converter-heading p{font-size:11px;color:var(--muted);margin:0}
+
+.converter-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+
+.convert-card{
+  background:linear-gradient(145deg,#172333,#101824);
+  border:1px solid #2a3b50;
+  border-radius:15px;
+  padding:16px;
+  min-width:0;
+  transition:.25s;
+}
+
+.convert-card:hover{border-color:#4b6683}
+
+.convert-card h4{
+  font-size:13px;
+  margin:0 0 5px;
+}
+
+.convert-card .sub{
+  color:var(--muted);
+  font-size:10px;
+  margin-bottom:13px;
+  line-height:1.5;
+}
+
+.convert-result{
+  margin-top:13px;
+  padding:13px;
+  background:#0b121d;
+  border:1px solid #26364a;
+  border-radius:11px;
+}
+
+.convert-main{
+  font-size:23px;
+  font-weight:900;
+  letter-spacing:-.7px;
+  color:var(--green);
+  margin-bottom:9px;
+  overflow-wrap:anywhere;
+}
+
+.result-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 0;
+  border-bottom:1px solid #202d3d;
+  font-size:11px;
+}
+
+.result-line:last-child{border:0}
+.result-line span:first-child{color:var(--muted)}
+.result-line strong{text-align:right;overflow-wrap:anywhere}
+
+.convert-card .input-wrap input{font-size:15px}
+
+.convert-note{
+  color:#7f91a8;
+  font-size:10px;
+  line-height:1.5;
+  margin-top:10px;
+}
+
+/* ACHATS */
+
+.purchase-panel{
+  padding:19px;
+  margin-bottom:16px;
+}
+
+.purchase-panel h3{font-size:15px;margin:0 0 7px}
+
+.purchase-summary{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+  margin-bottom:15px;
+}
+
+.purchase-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+
+.purchase-box{
+  padding:13px;
+  background:#101a27;
+  border:1px solid #29394e;
+  border-radius:12px;
+}
+
+.purchase-box span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-bottom:8px;
+}
+
+.purchase-box strong{
+  display:block;
+  font-size:18px;
+  overflow-wrap:anywhere;
+}
+
+/* HISTORIQUE ACHATS */
+
+.buy-list{
+  max-height:330px;
+  overflow:auto;
+  scrollbar-width:thin;
+  scrollbar-color:#40536b #111722;
+}
+
+.buy-row{
+  display:grid;
+  grid-template-columns:75px 1fr 1fr;
+  gap:10px;
+  align-items:center;
+  padding:12px 8px;
+  border-bottom:1px solid #202b3a;
+  font-size:11px;
+}
+
+.buy-row:last-child{border:0}
+.buy-row strong{display:block;margin-bottom:4px}
+.buy-row small{color:var(--muted)}
+.buy-row .buy-session{color:var(--green);font-weight:900}
+.buy-empty{padding:18px;color:var(--muted);font-size:11px;text-align:center}
+
+.lower-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:15px;
@@ -392,10 +611,9 @@ canvas{display:block;width:100%;height:100%}
 }
 
 .mini-panel{padding:18px;min-width:0}
-
 .mini-panel h3{font-size:14px;margin:0 0 15px}
 
-.scroll-list {
+.scroll-list{
   max-height:430px;
   overflow-y:auto;
   padding-right:5px;
@@ -406,7 +624,7 @@ canvas{display:block;width:100%;height:100%}
 .scroll-list::-webkit-scrollbar{width:6px}
 .scroll-list::-webkit-scrollbar-thumb{background:#40536b;border-radius:10px}
 
-.milestone {
+.milestone{
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -417,11 +635,10 @@ canvas{display:block;width:100%;height:100%}
 }
 
 .milestone:last-child{border:0}
-
 .milestone strong{display:block;margin-bottom:4px}
 .milestone small{color:var(--muted)}
 
-.session-chip {
+.session-chip{
   padding:6px 8px;
   border:1px solid #2b3b4e;
   background:#111b29;
@@ -431,29 +648,29 @@ canvas{display:block;width:100%;height:100%}
   white-space:nowrap;
 }
 
-.milestone.reached .session-chip {
+.milestone.reached .session-chip{
   border-color:#397456;
   background:#14271f;
 }
 
-.history-scroll {
+.history-scroll{
   max-height:430px;
-  overflow-y:auto;
+  overflow:auto;
   scrollbar-width:thin;
   scrollbar-color:#40536b #111722;
 }
 
-.history-scroll::-webkit-scrollbar{width:6px}
+.history-scroll::-webkit-scrollbar{width:6px;height:6px}
 .history-scroll::-webkit-scrollbar-thumb{background:#40536b;border-radius:10px}
 
-table {
+table{
   width:100%;
   border-collapse:collapse;
   font-size:11px;
   white-space:nowrap;
 }
 
-th {
+th{
   position:sticky;
   top:0;
   background:#151e2b;
@@ -464,7 +681,7 @@ th {
   z-index:1;
 }
 
-td {
+td{
   padding:11px 8px;
   border-bottom:1px solid #202b3a;
   color:#d7e0ed;
@@ -472,21 +689,21 @@ td {
 
 tr:hover td{background:#192638}
 
-.history-note {
+.history-note{
   color:#718199;
   font-size:10px;
   margin-top:11px;
   line-height:1.5;
 }
 
-.footer {
+.footer{
   text-align:center;
   color:#607187;
   font-size:10px;
   padding:23px 0 5px;
 }
 
-.toast {
+.toast{
   position:fixed;
   bottom:20px;
   left:50%;
@@ -501,21 +718,22 @@ tr:hover td{background:#192638}
   font-weight:850;
   transition:.25s;
   z-index:10;
+  box-shadow:0 8px 35px #0005;
 }
 
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
-@keyframes appear {
-  from{opacity:0;transform:translateY(7px)}
+@keyframes appear{
+  from{opacity:0;transform:translateY(9px)}
   to{opacity:1;transform:translateY(0)}
 }
 
-@media(max-width:1100px) {
+@media(max-width:1100px){
   .layout{grid-template-columns:275px minmax(0,1fr)}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
-@media(max-width:760px) {
+@media(max-width:760px){
   .app{padding:14px}
   .layout{grid-template-columns:1fr}
   .controls{position:static}
@@ -523,22 +741,39 @@ tr:hover td{background:#192638}
   .stats{gap:8px}
   .stat{padding:12px}
   .stat-value{font-size:21px}
-  .chart-panel{padding:14px}
+  .chart-panel,.converter,.purchase-panel{padding:14px}
   .chart-head{flex-direction:column}
   .chart-inner{height:280px}
   .lower-grid{grid-template-columns:1fr}
   .scroll-list,.history-scroll{max-height:380px}
+  .converter-grid{grid-template-columns:1fr}
+  .purchase-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
-@media(max-width:390px) {
+@media(max-width:390px){
   .controls-grid{grid-template-columns:1fr}
   .stat-value{font-size:18px}
   .live{font-size:9px}
+  .buy-row{grid-template-columns:55px 1fr}
+  .buy-row > :last-child{grid-column:2}
+}
+
+/* REDUCTION DES ANIMATIONS SI DEMANDEE PAR LE SYSTEME */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+  }
 }
 </style>
 </head>
 
 <body>
+
+<div class="particles" id="particles"></div>
+
 <div class="app">
 
 <header class="top">
@@ -646,7 +881,7 @@ tr:hover td{background:#192638}
         <input id="reserveThreshold" type="text" inputmode="numeric" value="10">
         <span class="unit">spawners</span>
       </div>
-      <p class="hint">La réserve commence à être constituée lorsque tu possèdes au moins ce nombre de spawners.</p>
+      <p class="hint">La réserve commence à être constituée lorsque tu possèdes au moins ce nombre de spawners au début d'une session.</p>
     </div>
 
     <div class="reserve-info" id="reserveExplanation">
@@ -704,6 +939,8 @@ tr:hover td{background:#192638}
 
   </section>
 
+  <!-- GRAPHIQUE -->
+
   <section class="panel chart-panel">
 
     <div class="chart-head">
@@ -736,6 +973,173 @@ tr:hover td{background:#192638}
 
   </section>
 
+  <!-- CONVERTISSEUR -->
+
+  <section class="panel converter">
+
+    <div class="converter-heading">
+      <div>
+        <h3>⇄ Convertisseur intelligent</h3>
+        <p>Calcule tes achats et tes besoins en argent instantanément.</p>
+      </div>
+      <span class="tag">OUTIL</span>
+    </div>
+
+    <div class="converter-grid">
+
+      <div class="convert-card">
+        <h4 class="green">Argent → Spawners</h4>
+        <div class="sub">
+          Entre ton budget pour connaître le nombre de lots complets achetables.
+        </div>
+
+        <div class="field">
+          <label>Ton budget <span>Montant disponible</span></label>
+          <div class="input-wrap">
+            <input id="convertMoney" type="text" inputmode="decimal" value="1000000">
+            <span class="unit">$</span>
+          </div>
+        </div>
+
+        <div class="convert-result">
+          <div class="convert-main" id="moneyResultMain">—</div>
+
+          <div class="result-line">
+            <span>Lots achetables</span>
+            <strong id="moneyLots">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Spawners obtenus</span>
+            <strong id="moneySpawners">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Argent dépensé</span>
+            <strong id="moneySpent">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Argent restant</span>
+            <strong class="blue" id="moneyRemaining">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Items à récupérer</span>
+            <strong id="moneyItems">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Stacks + reste</span>
+            <strong class="orange" id="moneyStacks">—</strong>
+          </div>
+        </div>
+
+        <p class="convert-note">
+          1 lot acheté = 1 item à récupérer, contenant le nombre de spawners défini dans tes paramètres.
+        </p>
+      </div>
+
+      <div class="convert-card">
+        <h4 class="blue">Spawners → Argent</h4>
+        <div class="sub">
+          Entre le nombre de spawners que tu souhaites obtenir. Le calcul arrondit au lot supérieur.
+        </div>
+
+        <div class="field">
+          <label>Spawners souhaités <span>Objectif</span></label>
+          <div class="input-wrap">
+            <input id="convertSpawners" type="text" inputmode="numeric" value="100">
+            <span class="unit">unités</span>
+          </div>
+        </div>
+
+        <div class="convert-result">
+          <div class="convert-main blue" id="spawnerResultMain">—</div>
+
+          <div class="result-line">
+            <span>Lots nécessaires</span>
+            <strong id="spawnerLots">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Spawners achetés</span>
+            <strong id="spawnerBought">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Spawners en plus</span>
+            <strong id="spawnerExtra">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Argent nécessaire</span>
+            <strong class="green" id="spawnerCost">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Items à récupérer</span>
+            <strong id="spawnerItems">—</strong>
+          </div>
+
+          <div class="result-line">
+            <span>Stacks + reste</span>
+            <strong class="orange" id="spawnerStacks">—</strong>
+          </div>
+        </div>
+
+        <p class="convert-note">
+          Si ton objectif n'est pas divisible par le nombre de spawners d'un lot, le calcul prend le lot supplémentaire nécessaire.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RÉCAPITULATIF DES ACHATS -->
+
+  <section class="panel purchase-panel">
+
+    <h3>▣ Récapitulatif des achats</h3>
+    <p class="purchase-summary">
+      Tous les achats effectués pendant la simulation, avec le nombre de lots, d'items et de stacks à récupérer.
+    </p>
+
+    <div class="purchase-grid">
+
+      <div class="purchase-box">
+        <span>Total de lots achetés</span>
+        <strong class="green" id="totalLots">0</strong>
+      </div>
+
+      <div class="purchase-box">
+        <span>Total de spawners achetés</span>
+        <strong id="totalBought">0</strong>
+      </div>
+
+      <div class="purchase-box">
+        <span>Nombre total d'items</span>
+        <strong id="totalItems">0</strong>
+      </div>
+
+      <div class="purchase-box">
+        <span>Stacks complets + reste</span>
+        <strong class="orange" id="totalStacks">0</strong>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Historique détaillé des achats</h3>
+    <div class="buy-list" id="buyHistory">
+      <div class="buy-empty">Aucun achat pour le moment.</div>
+    </div>
+
+  </section>
+
+  <!-- PALIERS ET HISTORIQUE -->
+
   <div class="lower-grid">
 
     <section class="panel mini-panel">
@@ -761,6 +1165,8 @@ tr:hover td{background:#192638}
               <th>Spawners</th>
               <th>Gains</th>
               <th>Achat</th>
+              <th>Lots / items</th>
+              <th>Stacks</th>
               <th>Argent</th>
               <th>Réserve</th>
             </tr>
@@ -779,10 +1185,16 @@ tr:hover td{background:#192638}
 </main>
 </div>
 
+<div class="footer">
+  SPAWNERLAB · SIMULATION LOCALE · AUCUN SERVEUR EXTERNE
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 (() => {
+
+"use strict";
 
 const $ = id => document.getElementById(id);
 
@@ -797,91 +1209,115 @@ const defaults = {
   reserveThreshold:"10"
 };
 
-let data = [];
-let activeChart = "spawners";
-let hoverIndex = -1;
-let resizeTimer;
+let data=[];
+let activeChart="spawners";
+let hoverIndex=-1;
+let resizeTimer=null;
 
-const colors = {
+const colors={
   spawners:"#63f2a6",
   money:"#68b5ff",
   reserve:"#ffbf69",
   income:"#b49aff"
 };
 
-const names = {
+const names={
   spawners:"Spawners",
   money:"Argent disponible",
   reserve:"Réserve",
   income:"Gains par session"
 };
 
-/* FORMATAGE */
+/* OUTILS DE FORMATAGE */
 
-function number(id, fallback=0, max=1e15) {
-  const raw = $(id).value.trim().replace(/\s/g,"").replace(",",".");
-  if(raw === "") return fallback;
+function number(id,fallback=0,max=1e15){
+  const raw=$(id).value.trim().replace(/\s/g,"").replace(",",".");
+  if(raw==="") return fallback;
 
-  const value = Number(raw);
-
+  const value=Number(raw);
   if(!Number.isFinite(value)) return fallback;
 
   return Math.min(max,Math.max(0,value));
 }
 
-function money(value) {
+function money(value){
   return new Intl.NumberFormat("fr-FR",{
     maximumFractionDigits:0
   }).format(Math.round(value))+" $";
 }
 
-function compact(value) {
+function compact(value){
   if(!Number.isFinite(value)) return "—";
 
-  const a = Math.abs(value);
+  const a=Math.abs(value);
 
-  if(a >= 1e12)
+  if(a>=1e12)
     return (value/1e12).toLocaleString("fr-FR",{maximumFractionDigits:2})+" T$";
 
-  if(a >= 1e9)
+  if(a>=1e9)
     return (value/1e9).toLocaleString("fr-FR",{maximumFractionDigits:2})+" Md$";
 
-  if(a >= 1e6)
+  if(a>=1e6)
     return (value/1e6).toLocaleString("fr-FR",{maximumFractionDigits:2})+" M$";
 
-  if(a >= 1e3)
+  if(a>=1e3)
     return (value/1e3).toLocaleString("fr-FR",{maximumFractionDigits:1})+" k$";
 
   return money(value);
 }
 
-function integer(value) {
+function integer(value){
   return new Intl.NumberFormat("fr-FR",{
     maximumFractionDigits:0
   }).format(value);
 }
 
-/* CALCUL DE LA SIMULATION */
+function safeText(value){
+  return String(value).replace(/[&<>"']/g,char=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  })[char]);
+}
 
-function simulate() {
+/* CALCUL DES STACKS */
 
-  const startS = Math.floor(number("startSpawners"));
-  const startM = number("startMoney");
-  const gain = number("income");
-  const price = Math.max(1,number("lotPrice",500000));
-  const size = Math.max(1,Math.floor(number("lotSize",3)));
-  const sessions = Math.max(1,Math.min(5000,Math.floor(number("sessions",100))));
+function stackInfo(items){
+  items=Math.max(0,Math.floor(items));
+  return {
+    full:Math.floor(items/64),
+    rest:items%64
+  };
+}
 
-  const reservePercent = Math.min(100,number("reservePercent"));
-  const threshold = Math.floor(number("reserveThreshold",10));
+function stackText(items){
+  const s=stackInfo(items);
+  return `${integer(s.full)} stack${s.full>1?"s":""} + ${integer(s.rest)} item${s.rest>1?"s":""}`;
+}
 
-  let spawners = startS;
-  let available = startM;
-  let reserve = 0;
-  let totalLots = 0;
-  let totalBought = 0;
+/* SIMULATION */
 
-  data = [{
+function simulate(){
+
+  const startS=Math.floor(number("startSpawners"));
+  const startM=number("startMoney");
+  const gain=number("income");
+  const price=Math.max(1,number("lotPrice",500000));
+  const size=Math.max(1,Math.floor(number("lotSize",3)));
+  const sessions=Math.max(1,Math.min(5000,Math.floor(number("sessions",100))));
+
+  const reservePercent=Math.min(100,number("reservePercent"));
+  const threshold=Math.floor(number("reserveThreshold",10));
+
+  let spawners=startS;
+  let available=startM;
+  let reserve=0;
+  let totalLots=0;
+  let totalBought=0;
+
+  data=[{
     session:0,
     spawners,
     money:available,
@@ -889,38 +1325,44 @@ function simulate() {
     earned:0,
     bought:0,
     lots:0,
+    lotsThisSession:0,
+    items:0,
+    stacks:0,
+    stackRest:0,
     protected:0
   }];
 
-  for(let session=1;session<=sessions;session++) {
+  for(let session=1;session<=sessions;session++){
 
-    // Gains calculés avec les spawners possédés au début de la session.
-    const earned = spawners * gain;
+    // Les spawners du début de session produisent.
+    const spawnersAtStart=spawners;
+    const earned=spawnersAtStart*gain;
 
-    // La règle de réserve ne s'active qu'à partir du seuil.
-    const reserveActive = spawners >= threshold;
+    // La réserve dépend du nombre de spawners au début de session.
+    const reserveActive=spawnersAtStart>=threshold;
 
-    let protectedMoney = 0;
-    let investableMoney = earned;
+    let protectedMoney=0;
+    let investableMoney=earned;
 
-    if(reserveActive) {
-      protectedMoney = earned * reservePercent / 100;
-      investableMoney = earned - protectedMoney;
+    if(reserveActive){
+      protectedMoney=earned*reservePercent/100;
+      investableMoney=earned-protectedMoney;
     }
 
-    // On sépare l'argent disponible de l'argent protégé.
-    reserve += protectedMoney;
-    available += investableMoney;
+    reserve+=protectedMoney;
+    available+=investableMoney;
 
     // Achat du maximum de lots complets possible.
-    const boughtLots = Math.floor((available + 0.000001) / price);
-    const bought = boughtLots * size;
+    const boughtLots=Math.floor((available+0.000001)/price);
+    const bought=boughtLots*size;
 
-    available -= boughtLots * price;
-    spawners += bought;
+    available-=boughtLots*price;
+    spawners+=bought;
 
-    totalLots += boughtLots;
-    totalBought += bought;
+    totalLots+=boughtLots;
+    totalBought+=bought;
+
+    const stacks=stackInfo(boughtLots);
 
     data.push({
       session,
@@ -930,6 +1372,10 @@ function simulate() {
       earned,
       bought,
       lots:totalLots,
+      lotsThisSession:boughtLots,
+      items:boughtLots,
+      stacks:stacks.full,
+      stackRest:stacks.rest,
       protected:protectedMoney
     });
   }
@@ -938,90 +1384,86 @@ function simulate() {
   renderChart();
   renderHistory();
   renderMilestones();
+  renderPurchases(totalLots,totalBought);
+  updateConverter();
   save();
 }
 
 /* INDICATEURS */
 
-function updateStats(startS,totalBought,totalLots,gain) {
+function updateStats(startS,totalBought,totalLots,gain){
 
-  const last = data[data.length-1];
+  const last=data[data.length-1];
 
-  $("statSpawners").textContent = integer(last.spawners);
-  $("statMoney").textContent = compact(last.money);
-  $("statReserve").textContent = compact(last.reserve);
-  $("statIncome").textContent = compact(last.spawners*gain);
+  $("statSpawners").textContent=integer(last.spawners);
+  $("statMoney").textContent=compact(last.money);
+  $("statReserve").textContent=compact(last.reserve);
+  $("statIncome").textContent=compact(last.spawners*gain);
 
-  $("statSpawnersNote").textContent =
+  $("statSpawnersNote").textContent=
     "+"+integer(last.spawners-startS)+" depuis le départ";
-
 }
 
-/* COURBES */
+/* GRAPHIQUES */
 
-function getValues(key) {
-
-  return data.map(d => {
-
-    if(key === "income")
-      return d.spawners * number("income");
-
+function getValues(key){
+  return data.map(d=>{
+    if(key==="income")
+      return d.spawners*number("income");
     return d[key];
-
   });
-
 }
 
-function niceStep(value) {
+function niceStep(value){
+  if(value<=0||!Number.isFinite(value)) return 1;
 
-  if(value <= 0 || !Number.isFinite(value)) return 1;
+  const power=Math.pow(10,Math.floor(Math.log10(value)));
+  const n=value/power;
 
-  const power = Math.pow(10,Math.floor(Math.log10(value)));
-  const n = value/power;
-
-  if(n <= 1) return power;
-  if(n <= 2) return 2*power;
-  if(n <= 5) return 5*power;
+  if(n<=1) return power;
+  if(n<=2) return 2*power;
+  if(n<=5) return 5*power;
 
   return 10*power;
 }
 
-function renderChart() {
+function renderChart(){
 
-  const inner = $("chartInner");
-  const scroll = $("chartScroll");
-  const canvas = $("chart");
-  const ctx = canvas.getContext("2d");
+  const inner=$("chartInner");
+  const scroll=$("chartScroll");
+  const canvas=$("chart");
+  const ctx=canvas.getContext("2d");
 
-  const count = data.length;
-  const width = Math.max(
+  const count=data.length;
+
+  const width=Math.max(
     scroll.clientWidth,
     Math.min(14000,Math.max(750,count*10))
   );
 
-  inner.style.width = width+"px";
+  inner.style.width=width+"px";
 
-  const height = inner.clientHeight || 300;
-  const dpr = window.devicePixelRatio || 1;
+  const height=inner.clientHeight||300;
+  const dpr=window.devicePixelRatio||1;
 
-  canvas.width = Math.round(width*dpr);
-  canvas.height = Math.round(height*dpr);
-  canvas.style.width = width+"px";
-  canvas.style.height = height+"px";
+  canvas.width=Math.round(width*dpr);
+  canvas.height=Math.round(height*dpr);
+  canvas.style.width=width+"px";
+  canvas.style.height=height+"px";
 
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,width,height);
 
-  const pad = {left:72,right:23,top:20,bottom:38};
-  const plotWidth = width-pad.left-pad.right;
-  const plotHeight = height-pad.top-pad.bottom;
+  const pad={left:72,right:23,top:20,bottom:38};
+  const plotWidth=width-pad.left-pad.right;
+  const plotHeight=height-pad.top-pad.bottom;
 
-  const keys = activeChart === "all"
+  const keys=activeChart==="all"
     ? ["spawners","money","reserve","income"]
     : [activeChart];
 
-  const series = keys.map(key => {
-    const values = getValues(key);
+  const series=keys.map(key=>{
+    const values=getValues(key);
     return {
       key,
       values,
@@ -1029,25 +1471,25 @@ function renderChart() {
     };
   });
 
-  const x = i =>
-    pad.left + (count<=1 ? 0 : i/(count-1)*plotWidth);
+  const x=i=>
+    pad.left+(count<=1?0:i/(count-1)*plotWidth);
 
-  function y(value,s) {
-    return pad.top + plotHeight -
-      (s.max===0 ? 0 : value/s.max)*plotHeight;
+  function y(value,s){
+    return pad.top+plotHeight-
+      (s.max===0?0:value/s.max)*plotHeight;
   }
 
-  // Grille.
-  const reference = series[0];
-  const step = niceStep(reference.max/4);
+  // Grille verticale et horizontale.
+  const reference=series[0];
+  const step=niceStep(reference.max/4);
 
   ctx.font="10px system-ui";
   ctx.textBaseline="middle";
 
-  for(let i=0;i<=4;i++) {
+  for(let i=0;i<=4;i++){
 
-    const value = step*i;
-    const yy = y(value,reference);
+    const value=step*i;
+    const yy=y(value,reference);
 
     ctx.beginPath();
     ctx.strokeStyle="#263448";
@@ -1060,18 +1502,15 @@ function renderChart() {
     ctx.textAlign="right";
 
     ctx.fillText(
-      reference.key==="spawners"
-        ? integer(value)
-        : compact(value),
+      reference.key==="spawners"?integer(value):compact(value),
       pad.left-10,
       yy
     );
   }
 
-  // Repères de sessions.
-  const tick = Math.max(1,Math.ceil((count-1)/9));
+  const tick=Math.max(1,Math.ceil((count-1)/9));
 
-  for(let i=0;i<count;i+=tick) {
+  for(let i=0;i<count;i+=tick){
 
     const xx=x(i);
 
@@ -1086,10 +1525,10 @@ function renderChart() {
     ctx.fillText("S"+data[i].session,xx,height-17);
   }
 
-  // Courbes.
-  for(const s of series) {
+  // Dessin des courbes.
+  for(const s of series){
 
-    const gradient = ctx.createLinearGradient(
+    const gradient=ctx.createLinearGradient(
       0,pad.top,0,pad.top+plotHeight
     );
 
@@ -1098,17 +1537,14 @@ function renderChart() {
 
     ctx.beginPath();
 
-    s.values.forEach((value,i) => {
-
+    s.values.forEach((value,i)=>{
       const xx=x(i);
       const yy=y(value,s);
 
       if(i===0) ctx.moveTo(xx,yy);
       else ctx.lineTo(xx,yy);
-
     });
 
-    // Remplissage sous la courbe.
     ctx.lineTo(x(count-1),pad.top+plotHeight);
     ctx.lineTo(x(0),pad.top+plotHeight);
     ctx.closePath();
@@ -1116,41 +1552,32 @@ function renderChart() {
     ctx.fillStyle=gradient;
     ctx.fill();
 
-    // Trait de la courbe.
     ctx.beginPath();
     ctx.lineWidth=2.6;
     ctx.strokeStyle=colors[s.key];
     ctx.lineJoin="round";
     ctx.lineCap="round";
 
-    s.values.forEach((value,i) => {
-
+    s.values.forEach((value,i)=>{
       const xx=x(i);
       const yy=y(value,s);
 
       if(i===0) ctx.moveTo(xx,yy);
       else ctx.lineTo(xx,yy);
-
     });
 
     ctx.stroke();
 
-    // Points si peu de sessions.
-    if(count<=60) {
-
-      s.values.forEach((value,i) => {
-
+    if(count<=60){
+      s.values.forEach((value,i)=>{
         ctx.beginPath();
         ctx.fillStyle=colors[s.key];
         ctx.arc(x(i),y(value,s),2.7,0,Math.PI*2);
         ctx.fill();
-
       });
-
     }
 
-    // Point sélectionné.
-    if(hoverIndex>=0 && hoverIndex<count) {
+    if(hoverIndex>=0&&hoverIndex<count){
 
       const xx=x(hoverIndex);
       const yy=y(s.values[hoverIndex],s);
@@ -1173,9 +1600,7 @@ function renderChart() {
       ctx.lineWidth=1;
       ctx.arc(xx,yy,7,0,Math.PI*2);
       ctx.stroke();
-
     }
-
   }
 
   $("legend").innerHTML=series.map(s=>`
@@ -1189,7 +1614,7 @@ function renderChart() {
   updateChartRange();
 }
 
-function updateChartRange() {
+function updateChartRange(){
 
   const scroll=$("chartScroll");
   const width=scroll.scrollWidth;
@@ -1205,95 +1630,74 @@ function updateChartRange() {
     Math.ceil((scroll.scrollLeft+scroll.clientWidth)/width*(count-1))
   );
 
-  if(hoverIndex>=0 && data[hoverIndex]) {
+  if(hoverIndex>=0&&data[hoverIndex]){
 
     const d=data[hoverIndex];
 
-    $("chartRange").textContent =
-      `SESSION ${d.session}  ·  ${integer(d.spawners)} spawners  ·  ${money(d.earned)} gagnés  ·  ${money(d.money)} disponibles  ·  ${money(d.reserve)} en réserve`;
+    $("chartRange").textContent=
+      `SESSION ${d.session} · ${integer(d.spawners)} spawners · ${money(d.earned)} gagnés · ${money(d.money)} disponibles · ${money(d.reserve)} en réserve`;
 
-  } else {
+  }else{
 
-    $("chartRange").textContent =
+    $("chartRange").textContent=
       `Sessions ${data[left]?.session??0} à ${data[right]?.session??count-1} / ${count-1}`;
-
   }
-
 }
 
-/* HISTORIQUE COMPLET */
+/* HISTORIQUE */
 
-function renderHistory() {
+function renderHistory(){
 
   const body=$("history");
-
-  // Toutes les sessions, de la plus récente à la plus ancienne.
   const ordered=[...data].reverse();
 
-  body.innerHTML=ordered.map(d=>`
+  body.innerHTML=ordered.map(d=>{
 
-    <tr>
-      <td><strong>${d.session===0?"Départ":"S"+d.session}</strong></td>
+    const buy=d.lotsThisSession||0;
+    const stack=stackInfo(buy);
 
-      <td>${integer(d.spawners)}</td>
-
-      <td>${d.session===0?"—":compact(d.earned)}</td>
-
-      <td>
-        ${d.bought
-          ? `<span class="green">+${integer(d.bought)}</span>`
-          : "—"}
-      </td>
-
-      <td>${compact(d.money)}</td>
-
-      <td>${compact(d.reserve)}</td>
-    </tr>
-
-  `).join("");
-
+    return `
+      <tr>
+        <td><strong>${d.session===0?"Départ":"S"+d.session}</strong></td>
+        <td>${integer(d.spawners)}</td>
+        <td>${d.session===0?"—":compact(d.earned)}</td>
+        <td>${d.bought?`<span class="green">+${integer(d.bought)}</span>`:"—"}</td>
+        <td>${buy?`${integer(buy)} lots / ${integer(buy)} items`:"—"}</td>
+        <td>${buy?`${integer(stack.full)} + ${integer(stack.rest)}`:"—"}</td>
+        <td>${compact(d.money)}</td>
+        <td>${compact(d.reserve)}</td>
+      </tr>
+    `;
+  }).join("");
 }
 
-/* PALIERS JUSQU'À UN MILLION */
+/* PALIERS */
 
-function generateMilestones() {
+function generateMilestones(){
 
-  const targets = new Set();
+  const targets=new Set();
 
-  // Premiers paliers : très rapprochés.
   for(let i=10;i<=100;i+=10) targets.add(i);
-
   for(let i=125;i<=500;i+=25) targets.add(i);
-
   for(let i=550;i<=1000;i+=50) targets.add(i);
-
-  // Progression intermédiaire.
   for(let i=1100;i<=5000;i+=100) targets.add(i);
-
   for(let i=5500;i<=10000;i+=500) targets.add(i);
-
   for(let i=11000;i<=50000;i+=1000) targets.add(i);
-
-  // Grands objectifs.
   for(let i=55000;i<=100000;i+=5000) targets.add(i);
-
   for(let i=125000;i<=500000;i+=25000) targets.add(i);
-
   for(let i=550000;i<=1000000;i+=50000) targets.add(i);
 
   targets.add(1000000);
 
   return [...targets].sort((a,b)=>a-b);
-
 }
 
-function renderMilestones() {
+function renderMilestones(){
 
   const container=$("milestones");
   const targets=generateMilestones();
 
-  // On recherche la première session où chaque objectif est atteint.
-  const html=targets.map(target=>{
+  container.innerHTML=targets.map(target=>{
 
     const found=data.find(d=>d.spawners>=target);
     const reached=Boolean(found);
@@ -1303,9 +1707,7 @@ function renderMilestones() {
         <div>
           <strong>${integer(target)} spawners</strong>
           <small>
-            ${reached
-              ? "Objectif atteint"
-              : "Pas encore atteint sur cette simulation"}
+            ${reached?"Objectif atteint":"Pas encore atteint sur cette simulation"}
           </small>
         </div>
 
@@ -1314,19 +1716,103 @@ function renderMilestones() {
         </span>
       </div>
     `;
-
   }).join("");
+}
 
-  container.innerHTML=html;
+/* RÉCAPITULATIF DES ACHATS */
 
+function renderPurchases(totalLots,totalBought){
+
+  const items=totalLots;
+  const stacks=stackInfo(items);
+
+  $("totalLots").textContent=integer(totalLots);
+  $("totalBought").textContent=integer(totalBought);
+  $("totalItems").textContent=integer(items);
+  $("totalStacks").textContent=
+    `${integer(stacks.full)} + ${integer(stacks.rest)}`;
+
+  const purchases=data.filter(d=>d.lotsThisSession>0).reverse();
+
+  if(!purchases.length){
+    $("buyHistory").innerHTML=
+      `<div class="buy-empty">Aucun achat pour le moment.</div>`;
+    return;
+  }
+
+  $("buyHistory").innerHTML=purchases.map(d=>{
+
+    const lots=d.lotsThisSession;
+    const stack=stackInfo(lots);
+
+    return `
+      <div class="buy-row">
+        <div class="buy-session">S${d.session}</div>
+
+        <div>
+          <strong>${integer(lots)} lots = ${integer(lots)} items</strong>
+          <small>+${integer(d.bought)} spawners · ${money(lots*number("lotPrice",500000))}</small>
+        </div>
+
+        <div>
+          <strong>${integer(lots)} ÷ 64 = ${stack.full+stack.rest/64}</strong>
+          <small>${integer(stack.full)} stacks complets + ${integer(stack.rest)} items</small>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* CONVERTISSEUR */
+
+function updateConverter(){
+
+  const price=Math.max(1,number("lotPrice",500000));
+  const size=Math.max(1,Math.floor(number("lotSize",3)));
+
+  // Argent vers spawners.
+  const budget=number("convertMoney");
+  const lots=Math.floor((budget+0.000001)/price);
+  const bought=lots*size;
+  const spent=lots*price;
+  const remaining=budget-spent;
+  const itemCount=lots;
+  const stack=stackInfo(itemCount);
+
+  $("moneyResultMain").textContent=
+    `${integer(bought)} spawners`;
+
+  $("moneyLots").textContent=integer(lots);
+  $("moneySpawners").textContent=integer(bought);
+  $("moneySpent").textContent=money(spent);
+  $("moneyRemaining").textContent=money(remaining);
+  $("moneyItems").textContent=integer(itemCount);
+  $("moneyStacks").textContent=stackText(itemCount);
+
+  // Spawners vers argent.
+  const target=Math.floor(number("convertSpawners"));
+  const neededLots=Math.ceil(target/size);
+  const obtained=neededLots*size;
+  const extra=Math.max(0,obtained-target);
+  const cost=neededLots*price;
+  const targetStack=stackInfo(neededLots);
+
+  $("spawnerResultMain").textContent=
+    `${money(cost)} nécessaires`;
+
+  $("spawnerLots").textContent=integer(neededLots);
+  $("spawnerBought").textContent=integer(obtained);
+  $("spawnerExtra").textContent=integer(extra);
+  $("spawnerCost").textContent=money(cost);
+  $("spawnerItems").textContent=integer(neededLots);
+  $("spawnerStacks").textContent=stackText(neededLots);
 }
 
 /* SAUVEGARDE */
 
-function save() {
+function save(){
 
-  try {
-
+  try{
     const settings={};
 
     Object.keys(defaults).forEach(key=>{
@@ -1337,37 +1823,28 @@ function save() {
       "spawnerlab-settings",
       JSON.stringify(settings)
     );
-
-  } catch(e) {}
-
+  }catch(e){}
 }
 
-function load() {
+function load(){
 
-  try {
-
+  try{
     const settings=JSON.parse(
       localStorage.getItem("spawnerlab-settings")||"null"
     );
 
-    if(settings) {
-
+    if(settings){
       Object.keys(defaults).forEach(key=>{
-
         if(settings[key]!==undefined)
           $(key).value=settings[key];
-
       });
-
     }
-
-  } catch(e) {}
-
+  }catch(e){}
 }
 
 /* NOTIFICATIONS */
 
-function toast(message) {
+function toast(message){
 
   const t=$("toast");
 
@@ -1379,21 +1856,48 @@ function toast(message) {
   toast.timer=setTimeout(()=>{
     t.classList.remove("show");
   },1900);
-
 }
 
-/* EXPLICATION DE LA RÉSERVE */
+/* RÉSERVE */
 
-function updateReserveExplanation() {
+function updateReserveExplanation(){
 
   const percent=Math.min(100,number("reservePercent"));
   const threshold=Math.floor(number("reserveThreshold",10));
   const reinvest=100-percent;
 
-  $("reserveExplanation").textContent =
-    `${percent}% conservé · ${reinvest}% réinvesti. `+
-    `Cette règle s'active à partir de ${integer(threshold)} spawners.`;
+  $("reserveExplanation").textContent=
+    `${percent}% conservé · ${reinvest}% réinvesti. Cette règle s'active à partir de ${integer(threshold)} spawners.`;
+}
 
+/* PARTICULES */
+
+function createParticles(){
+
+  const container=$("particles");
+  const count=32;
+
+  for(let i=0;i<count;i++){
+
+    const particle=document.createElement("span");
+    particle.className="particle";
+
+    particle.style.left=(Math.random()*100)+"%";
+    particle.style.top=(Math.random()*100)+"%";
+    particle.style.animationDuration=(12+Math.random()*20)+"s";
+    particle.style.animationDelay=(-Math.random()*25)+"s";
+
+    const size=2+Math.random()*2;
+    particle.style.width=size+"px";
+    particle.style.height=size+"px";
+
+    if(Math.random()>.5){
+      particle.style.background="#68b5ff";
+      particle.style.boxShadow="0 0 12px #68b5ff";
+    }
+
+    container.appendChild(particle);
+  }
 }
 
 /* INTERACTIONS */
@@ -1410,33 +1914,28 @@ document.querySelectorAll("[data-chart]").forEach(button=>{
 
     hoverIndex=-1;
     renderChart();
-
   });
-
 });
 
-// On laisse les champs complètement libres.
-// Une case vide reste vide et est interprétée comme zéro
-// (ou comme la valeur de secours pour les sessions).
-const inputIds=Object.keys(defaults);
-
-inputIds.forEach(id=>{
+// Paramètres.
+Object.keys(defaults).forEach(id=>{
 
   $(id).addEventListener("input",()=>{
 
     updateReserveExplanation();
     simulate();
-
   });
-
 });
+
+// Convertisseur.
+$("convertMoney").addEventListener("input",updateConverter);
+$("convertSpawners").addEventListener("input",updateConverter);
 
 $("recalc").addEventListener("click",()=>{
 
   updateReserveExplanation();
   simulate();
   toast("Simulation actualisée");
-
 });
 
 $("reset").addEventListener("click",()=>{
@@ -1445,13 +1944,15 @@ $("reset").addEventListener("click",()=>{
     $(key).value=defaults[key];
   });
 
+  $("convertMoney").value="1000000";
+  $("convertSpawners").value="100";
+
   $("chartScroll").scrollLeft=0;
 
   updateReserveExplanation();
   simulate();
 
   toast("Paramètres réinitialisés");
-
 });
 
 // Défilement du graphique.
@@ -1459,10 +1960,10 @@ $("chartScroll").addEventListener("scroll",()=>{
   updateChartRange();
 },{passive:true});
 
-// Détection du point touché ou survolé.
+// Sélection d'un point du graphique.
 const canvas=$("chart");
 
-function selectPoint(event) {
+function selectPoint(event){
 
   const rect=canvas.getBoundingClientRect();
   const px=event.clientX-rect.left;
@@ -1480,18 +1981,15 @@ function selectPoint(event) {
 
   renderChart();
   updateChartRange();
-
 }
 
 canvas.addEventListener("pointermove",selectPoint);
 canvas.addEventListener("pointerdown",selectPoint);
 
 canvas.addEventListener("pointerleave",()=>{
-
   hoverIndex=-1;
   renderChart();
   updateChartRange();
-
 });
 
 // Redimensionnement.
@@ -1502,13 +2000,14 @@ window.addEventListener("resize",()=>{
   resizeTimer=setTimeout(()=>{
     renderChart();
   },120);
-
 });
 
 // Démarrage.
+createParticles();
 load();
 updateReserveExplanation();
 simulate();
+updateConverter();
 
 })();
 </script>
