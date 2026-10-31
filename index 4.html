@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0d14">
+<title>SpawnerLab — Simulateur Minecraft</title>
+<style>
+:root{--bg:#0a0d14;--panel:#111722;--panel2:#151d2a;--line:#263246;--text:#edf3ff;--muted:#94a3b8;--green:#63f2a6;--blue:#68b5ff;--purple:#b49aff;--orange:#ffbf69;--red:#ff7b8b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% -10%,#1b2c3d 0,transparent 38%),radial-gradient(ellipse at 100% 0%,#211c3b 0,transparent 30%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer} .app{max-width:1500px;margin:auto;padding:26px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px}.brand{display:flex;align-items:center;gap:13px}.logo{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#67f3a6,#4eabff);color:#06120e;font-size:24px;font-weight:1000;box-shadow:0 8px 30px #63f2a622}.brand h1{font-size:20px;margin:0;letter-spacing:-.5px}.brand p{color:var(--muted);font-size:12px;margin:3px 0 0}.live{border:1px solid #285b48;background:#10251e;color:var(--green);padding:8px 12px;border-radius:99px;font-size:12px;font-weight:700}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:0 0 22px}.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--green);font-weight:800}.hero h2{font-size:clamp(27px,4vw,43px);line-height:1.08;letter-spacing:-1.5px;margin:9px 0}.hero p{color:var(--muted);max-width:680px;line-height:1.55;margin:0;font-size:14px}.hero-badge{white-space:nowrap;padding:12px 15px;border-radius:14px;background:#131e2a;border:1px solid var(--line);color:#c6d5e8;font-size:12px}
+.layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:18px;align-items:start}.panel{background:linear-gradient(180deg,#131a26f5,#0f1520f5);border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 40px #00000018}.controls{padding:20px;position:sticky;top:14px}.panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.panel-title h3{margin:0;font-size:15px}.tiny-tag{font-size:10px;color:var(--green);border:1px solid #285b48;border-radius:6px;padding:4px 7px}
+.field{margin:15px 0}.field label{display:flex;justify-content:space-between;gap:10px;color:#bdc9da;font-size:12px;margin-bottom:7px}.field label span{color:var(--muted)}.input-wrap{display:flex;align-items:center;background:#0a1019;border:1px solid #2a3547;border-radius:11px;overflow:hidden;transition:.2s}.input-wrap:focus-within{border-color:var(--green);box-shadow:0 0 0 3px #63f2a615}.input-wrap input{width:100%;min-width:0;background:transparent;border:0;outline:0;padding:12px;color:var(--text);font-size:14px}.unit{padding:0 12px;color:#72839a;font-size:11px}.hint{color:#718198;font-size:11px;line-height:1.45;margin:6px 0 0}.divider{height:1px;background:var(--line);margin:20px 0}.btnrow{display:flex;gap:8px}.btn{border:1px solid var(--line);background:#1a2432;color:var(--text);padding:10px 12px;border-radius:10px;font-size:12px;font-weight:750;transition:.18s}.btn:hover{transform:translateY(-1px);border-color:#53657d}.btn.primary{background:var(--green);border-color:var(--green);color:#06130d;flex:1}.btn.ghost{background:transparent}.controls-foot{font-size:11px;color:#74849a;line-height:1.55;margin-top:14px}
+.main{min-width:0}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.stat{padding:17px;border-radius:16px;background:#121a26;border:1px solid var(--line);min-width:0}.stat-top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--muted);font-size:11px}.stat-icon{width:28px;height:28px;border-radius:9px;background:#1d2b39;display:grid;place-items:center;font-size:14px}.stat-value{font-size:clamp(19px,2vw,28px);font-weight:850;letter-spacing:-.8px;margin:13px 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat-note{font-size:11px;color:var(--muted)}.green{color:var(--green)}.blue{color:var(--blue)}.purple{color:var(--purple)}.orange{color:var(--orange)}
+.chart-panel{padding:19px;margin-bottom:16px;overflow:hidden}.chart-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:15px}.chart-head h3{font-size:15px;margin:0 0 5px}.chart-head p{font-size:11px;color:var(--muted);margin:0;line-height:1.5}.chart-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}.pill{border:1px solid var(--line);background:#111a27;color:#aebdd0;border-radius:8px;padding:7px 9px;font-size:11px}.pill.active{background:#1c342b;border-color:#397456;color:var(--green)}.chart-scroll{overflow-x:auto;overflow-y:hidden;scrollbar-color:#40536b #111722;scrollbar-width:thin;border-radius:12px;touch-action:pan-x pan-y;overscroll-behavior-x:contain}.chart-scroll::-webkit-scrollbar{height:8px}.chart-scroll::-webkit-scrollbar-track{background:#111722;border-radius:9px}.chart-scroll::-webkit-scrollbar-thumb{background:#40536b;border-radius:9px}.chart-inner{height:310px;position:relative;min-width:100%}canvas{display:block;width:100%;height:100%}.chart-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#7f91a8;font-size:10px;margin-top:9px}.scroll-hint{color:#a9b9cd}.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}.legend-item{display:flex;align-items:center;gap:7px;color:#aab8ca;font-size:11px}.dot{width:8px;height:8px;border-radius:50%}.lower-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.mini-panel{padding:19px}.mini-panel h3{font-size:14px;margin:0 0 14px}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}th{text-align:left;color:#7f91a8;font-weight:600;padding:10px 8px;border-bottom:1px solid var(--line)}td{padding:11px 8px;border-bottom:1px solid #202b3a;color:#d7e0ed}tr:last-child td{border-bottom:0}.empty{color:var(--muted);font-size:12px;line-height:1.6}.milestone{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #202b3a;font-size:12px}.milestone:last-child{border-bottom:0}.milestone strong{display:block;margin-bottom:4px}.milestone small{color:var(--muted)}.session-chip{padding:5px 8px;border:1px solid #2b3b4e;background:#111b29;border-radius:8px;color:var(--green);font-weight:800;white-space:nowrap}.footer{text-align:center;color:#607187;font-size:10px;padding:22px 0 4px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#dfffee;color:#082216;padding:11px 16px;border-radius:11px;font-size:12px;font-weight:800;box-shadow:0 10px 30px #0006;transition:.25s;z-index:10}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1050px){.layout{grid-template-columns:270px minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.lower-grid{grid-template-columns:1fr}.hero-badge{display:none}}
+@media(max-width:760px){.app{padding:15px}.top{margin-bottom:22px}.brand h1{font-size:18px}.hero{margin-bottom:17px}.layout{grid-template-columns:1fr}.controls{position:static}.controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.controls-grid .field{margin:9px 0}.stats{gap:9px}.stat{padding:13px}.stat-value{font-size:22px}.chart-panel{padding:14px}.chart-head{flex-direction:column}.chart-actions{justify-content:flex-start}.chart-inner{height:275px}.chart-bottom{align-items:flex-start;flex-direction:column}.lower-grid{gap:12px}}
+@media(max-width:390px){.stats{grid-template-columns:1fr 1fr}.stat-value{font-size:19px}.controls-grid{grid-template-columns:1fr}.live{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><div class="logo">◆</div><div><h1>Spawner<span style="color:var(--green)">Lab</span></h1><p>Simulateur de progression Minecraft</p></div></div>
+    <div class="live">● SIMULATION ACTIVE</div>
+  </header>
+  <section class="hero">
+    <div><div class="eyebrow">Ton économie, en données</div><h2>Construis ta croissance.</h2><p>Simule tes sessions, réinvestis tes gains et visualise à quelle vitesse ton empire de spawners peut grandir. Modifie les paramètres : tous les graphiques se recalculent instantanément.</p></div>
+    <div class="hero-badge">◷ &nbsp; Temps mesuré en sessions complètes</div>
+  </section>
+  <div class="layout">
+    <aside class="panel controls">
+      <div class="panel-title"><h3>Paramètres de simulation</h3><span class="tiny-tag">ÉDITABLE</span></div>
+      <div class="controls-grid">
+        <div class="field"><label for="startSpawners">Spawners actuels <span>Départ</span></label><div class="input-wrap"><input id="startSpawners" type="number" min="0" step="1" value="3"><span class="unit">unités</span></div></div>
+        <div class="field"><label for="startMoney">Argent actuel <span>Départ</span></label><div class="input-wrap"><input id="startMoney" type="number" min="0" step="1000" value="0"><span class="unit">$</span></div></div>
+        <div class="field"><label for="income">Gain par spawner <span>Chaque session</span></label><div class="input-wrap"><input id="income" type="number" min="0" step="1000" value="25000"><span class="unit">$/session</span></div></div>
+        <div class="field"><label for="lotPrice">Prix d'un lot <span>Achat</span></label><div class="input-wrap"><input id="lotPrice" type="number" min="1" step="10000" value="500000"><span class="unit">$</span></div></div>
+        <div class="field"><label for="lotSize">Spawners par lot <span>Fixe ou modifiable</span></label><div class="input-wrap"><input id="lotSize" type="number" min="1" step="1" value="3"><span class="unit">unités</span></div></div>
+        <div class="field"><label for="sessions">Sessions à simuler <span>Horizon</span></label><div class="input-wrap"><input id="sessions" type="number" min="1" max="5000" step="1" value="100"><span class="unit">sessions</span></div></div>
+      </div>
+      <p class="hint">Les achats ont lieu après les gains de chaque session. Le site achète automatiquement autant de lots entiers que ton solde le permet.</p>
+      <div class="divider"></div>
+      <div class="btnrow"><button class="btn primary" id="recalc">↻ Actualiser les courbes</button><button class="btn ghost" id="reset">Réinitialiser</button></div>
+      <div class="controls-foot">Tes données restent dans ce navigateur. Aucun compte, serveur ou abonnement nécessaire.</div>
+    </aside>
+    <main class="main">
+      <section class="stats">
+        <div class="stat"><div class="stat-top">Spawners à la fin <span class="stat-icon">▦</span></div><div class="stat-value green" id="statSpawners">—</div><div class="stat-note" id="statSpawnersNote">Après la dernière session</div></div>
+        <div class="stat"><div class="stat-top">Solde restant <span class="stat-icon">＄</span></div><div class="stat-value" id="statMoney">—</div><div class="stat-note">Après les achats automatiques</div></div>
+        <div class="stat"><div class="stat-top">Gains par session <span class="stat-icon">↗</span></div><div class="stat-value blue" id="statIncome">—</div><div class="stat-note">Au rythme de fin de simulation</div></div>
+        <div class="stat"><div class="stat-top">Lots achetés <span class="stat-icon">⬡</span></div><div class="stat-value purple" id="statLots">—</div><div class="stat-note" id="statLotsNote">Au total pendant la simulation</div></div>
+      </section>
+      <section class="panel chart-panel">
+        <div class="chart-head"><div><h3>Évolution du nombre de spawners</h3><p>La courbe suit les achats réels par lots. Fais glisser le graphique horizontalement pour parcourir les sessions.</p></div><div class="chart-actions"><button class="pill active" data-chart="spawners">Spawners</button><button class="pill" data-chart="money">Argent</button><button class="pill" data-chart="income">Gains/session</button><button class="pill" data-chart="all">Comparer</button></div></div>
+        <div class="chart-scroll" id="chartScroll"><div class="chart-inner" id="chartInner"><canvas id="chart"></canvas></div></div>
+        <div class="chart-bottom"><span id="chartRange">Sessions 0–100</span><span class="scroll-hint">↔ Glisse pour avancer dans le temps · Survole ou touche un point pour ses détails</span></div>
+        <div class="legend" id="legend"></div>
+      </section>
+      <div class="lower-grid">
+        <section class="panel mini-panel"><h3>Prochains paliers</h3><div id="milestones"></div></section>
+        <section class="panel mini-panel"><h3>Historique des sessions</h3><div class="table-wrap"><table><thead><tr><th>Session</th><th>Spawners</th><th>Gains</th><th>Achats</th><th>Solde final</th></tr></thead><tbody id="history"></tbody></table></div><p class="hint">Affichage des dernières sessions disponibles. Les achats sont déduits après la collecte des gains.</p></section>
+      </div>
+    </main>
+  </div>
+  <footer class="footer">SPAWNERLAB · Simulation indicative · Les résultats supposent des gains constants par session.</footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const defaults={startSpawners:3,startMoney:0,income:25000,lotPrice:500000,lotSize:3,sessions:100};
+let data=[],activeChart='spawners',hoverIndex=-1,resizeTimer;
+const colors={spawners:'#63f2a6',money:'#68b5ff',income:'#b49aff'};
+const names={spawners:'Spawners',money:'Argent restant',income:'Gains par session'};
+function num(id,min=0,max=1e15){let v=Number($(id).value);if(!Number.isFinite(v))v=min;return Math.min(max,Math.max(min,v))}
+function fmt(n){if(!Number.isFinite(n))return '—';return new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(Math.round(n))+' $'}
+function compact(n){if(!Number.isFinite(n))return '—';let a=Math.abs(n);if(a>=1e12)return (n/1e12).toLocaleString('fr-FR',{maximumFractionDigits:2})+' T$';if(a>=1e9)return (n/1e9).toLocaleString('fr-FR',{maximumFractionDigits:2})+' Md$';if(a>=1e6)return (n/1e6).toLocaleString('fr-FR',{maximumFractionDigits:2})+' M$';if(a>=1e3)return (n/1e3).toLocaleString('fr-FR',{maximumFractionDigits:1})+' k$';return fmt(n)}
+function simulate(){
+ const startS=Math.floor(num('startSpawners')),startM=num('startMoney'),gain=num('income'),price=Math.max(1,num('lotPrice',1)),size=Math.max(1,Math.floor(num('lotSize',1))),sessions=Math.floor(num('sessions',1,5000));
+ $('sessions').value=sessions;$('startSpawners').value=startS;$('lotSize').value=size;
+ let sp=startS,money=startM,lots=0;
+ data=[{session:0,spawners:sp,money,earned:0,bought:0,lots}];
+ for(let i=1;i<=sessions;i++){
+   const earned=sp*gain;money+=earned;
+   const bought=Math.floor((money+1e-8)/price)*size;
+   if(bought>0){const boughtLots=bought/size;money-=boughtLots*price;lots+=boughtLots;sp+=bought;}
+   data.push({session:i,spawners:sp,money,earned,bought,lots});
+ }
+ $('statSpawners').textContent=fmt(data.at(-1).spawners).replace(' $','');
+ $('statMoney').textContent=compact(data.at(-1).money);
+ $('statIncome').textContent=compact(data.at(-1).spawners*gain);
+ $('statLots').textContent=fmt(lots).replace(' $','');
+ $('statSpawnersNote').textContent='+'+fmt(data.at(-1).spawners-startS).replace(' $','')+' depuis le départ';
+ $('statLotsNote').textContent='+'+fmt(lots).replace(' $','')+' lots de '+size;
+ renderChart();renderHistory();renderMilestones();save();
+}
+function visibleSeries(){
+ if(activeChart==='all')return ['spawners','money','income'];
+ return [activeChart];
+}
+function values(key){return data.map(d=>key==='income'?d.spawners*num('income'):d[key])}
+function niceStep(x){if(x<=0||!Number.isFinite(x))return 1;const p=Math.pow(10,Math.floor(Math.log10(x))),n=x/p;return (n<=1?1:n<=2?2:n<=5?5:10)*p}
+function renderChart(){
+ const inner=$('chartInner'),scroll=$('chartScroll'),canvas=$('chart'),ctx=canvas.getContext('2d');
+ const count=data.length, per=activeChart==='all'?8:9;
+ const width=Math.max(scroll.clientWidth,Math.min(12000,Math.max(700,count*per)));
+ inner.style.width=width+'px';
+ const height=inner.clientHeight||300,dpr=window.devicePixelRatio||1;
+ canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);canvas.style.width=width+'px';canvas.style.height=height+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
+ ctx.clearRect(0,0,width,height);
+ const pad={l:67,r:22,t:19,b:37},pw=width-pad.l-pad.r,ph=height-pad.t-pad.b;
+ const keys=visibleSeries(),allVals=keys.flatMap(k=>values(k));
+ let max=Math.max(...allVals,1),min=0;
+ // Use separate visual normalization in comparison mode so all three lines remain readable.
+ const series=keys.map(key=>{const v=values(key);let lo=0,hi=Math.max(...v,1);if(activeChart==='all'){lo=0;hi=Math.max(...v,1)}return {key,v,lo,hi}});
+ const x=i=>pad.l+(count<=1?0:i/(count-1)*pw);
+ const y=(v,s)=>pad.t+ph-(s.hi===s.lo?0.5:(v-s.lo)/(s.hi-s.lo))*ph;
+ ctx.font='10px system-ui';ctx.textBaseline='middle';
+ // horizontal grid and labels based on the first visible series
+ const ref=series[0],step=niceStep(ref.hi/4);
+ for(let i=0;i<=4;i++){const val=step*i,yy=y(val,ref);ctx.beginPath();ctx.strokeStyle='#243043';ctx.lineWidth=1;ctx.moveTo(pad.l,yy);ctx.lineTo(width-pad.r,yy);ctx.stroke();ctx.fillStyle='#8495aa';ctx.textAlign='right';ctx.fillText(activeChart==='spawners'?fmtAxis(val):compact(val),pad.l-10,yy)}
+ // Vertical session markers
+ const tick=Math.max(1,Math.ceil((count-1)/8));
+ for(let i=0;i<count;i+=tick){let xx=x(i);ctx.beginPath();ctx.strokeStyle='#1b2636';ctx.moveTo(xx,pad.t);ctx.lineTo(xx,pad.t+ph);ctx.stroke();ctx.fillStyle='#8495aa';ctx.textAlign='center';ctx.fillText('S'+data[i].session,xx,height-17)}
+ for(const s of series){
+   ctx.beginPath();ctx.lineWidth=2.5;ctx.strokeStyle=colors[s.key];ctx.lineJoin='round';ctx.lineCap='round';
+   s.v.forEach((v,i)=>{const xx=x(i),yy=y(v,s);if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy)});ctx.stroke();
+   if(s.v.length<60){s.v.forEach((v,i)=>{ctx.beginPath();ctx.fillStyle=colors[s.key];ctx.arc(x(i),y(v,s),2.5,0,Math.PI*2);ctx.fill()})}
+   if(hoverIndex>=0&&hoverIndex<s.v.length){ctx.beginPath();ctx.fillStyle=colors[s.key];ctx.arc(x(hoverIndex),y(s.v[hoverIndex],s),5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.strokeStyle=colors[s.key]+'66';ctx.moveTo(x(hoverIndex),pad.t);ctx.lineTo(x(hoverIndex),pad.t+ph);ctx.stroke()}
+ }
+ $('legend').innerHTML=series.map(s=>`<div class="legend-item"><span class="dot" style="background:${colors[s.key]}"></span>${names[s.key]}${activeChart==='all'?' · échelle adaptée':''}</div>`).join('');
+ const left=Math.max(0,Math.floor(scroll.scrollLeft/width*(count-1)));
+ const right=Math.min(count-1,Math.ceil((scroll.scrollLeft+scroll.clientWidth)/width*(count-1)));
+ $('chartRange').textContent=`Sessions ${data[left]?.session??0}–${data[right]?.session??count-1} sur ${count-1}`;
+ function fmtAxis(v){return Intl.NumberFormat('fr-FR',{notation:'compact',maximumFractionDigits:1}).format(v)}
+}
+function renderHistory(){
+ const body=$('history'),recent=data.slice(Math.max(0,data.length-9)).reverse();
+ body.innerHTML=recent.map(d=>`<tr><td><strong>${d.session}</strong></td><td>${fmt(d.spawners).replace(' $','')}</td><td>${compact(d.earned)}</td><td>${d.bought?'<span class="green">+'+fmt(d.bought).replace(' $','')+'</span>':'—'}</td><td>${compact(d.money)}</td></tr>`).join('');
+}
+function renderMilestones(){
+ const el=$('milestones'),start=Math.floor(num('startSpawners')),size=Math.max(1,Math.floor(num('lotSize',1))),gain=num('income'),price=Math.max(1,num('lotPrice',1));
+ const targets=[10,25,50,100,250,500,1000].filter(t=>t>start).slice(0,5);
+ let html='';
+ for(const target of targets){const found=data.find(d=>d.spawners>=target);html+=`<div class="milestone"><div><strong>${fmt(target).replace(' $','')} spawners</strong><small>${found?`Atteint à la session ${found.session}`:'Non atteint sur cet horizon'}</small></div><span class="session-chip">${found?'S'+found.session:'—'}</span></div>`}
+ const nextLot=data.find((d,i)=>i>0&&d.bought>0);
+ html+=`<div class="milestone"><div><strong>Prochain achat dans la simulation</strong><small>${nextLot?`Premier achat à la session ${nextLot.session}`:'Aucun lot acheté pendant cette période'}</small></div><span class="session-chip">${nextLot?'S'+nextLot.session:'—'}</span></div>`;
+ el.innerHTML=html;
+}
+function save(){try{const o={};Object.keys(defaults).forEach(k=>o[k]=$(k).value);localStorage.setItem('spawnerlab-settings',JSON.stringify(o))}catch(e){}}
+function load(){try{const o=JSON.parse(localStorage.getItem('spawnerlab-settings')||'null');if(o)Object.keys(defaults).forEach(k=>{if(o[k]!==undefined)$(k).value=o[k]})}catch(e){}}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),1900)}
+document.querySelectorAll('[data-chart]').forEach(b=>b.addEventListener('click',()=>{activeChart=b.dataset.chart;document.querySelectorAll('[data-chart]').forEach(x=>x.classList.toggle('active',x===b));renderChart()}));
+['startSpawners','startMoney','income','lotPrice','lotSize','sessions'].forEach(id=>$(id).addEventListener('input',()=>{simulate()}));
+$('recalc').addEventListener('click',()=>{simulate();toast('Courbes actualisées')});
+$('reset').addEventListener('click',()=>{Object.keys(defaults).forEach(k=>$(k).value=defaults[k]);simulate();$('chartScroll').scrollLeft=0;toast('Paramètres réinitialisés')});
+$('chartScroll').addEventListener('scroll',()=>{renderChart()},{passive:true});
+const canvas=$('chart');
+function pointer(e){const rect=canvas.getBoundingClientRect();const x=e.clientX-rect.left;const ratio=Math.max(0,Math.min(1,(x-67)/(rect.width-89)));hoverIndex=Math.round(ratio*(data.length-1));renderChart();const d=data[hoverIndex];if(d){$('chartRange').textContent=`Session ${d.session} · ${d.spawners} spawners · ${fmt(d.money)} restant · ${fmt(d.earned)} gagnés`;}}
+canvas.addEventListener('pointermove',pointer);canvas.addEventListener('pointerdown',pointer);canvas.addEventListener('pointerleave',()=>{hoverIndex=-1;renderChart()});
+window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(renderChart,100)});
+load();simulate();
+})();
+</script>
+</body>
+</html>
